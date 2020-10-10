@@ -27,7 +27,7 @@ bool ESP8266::restart()
     return initialize();
 }
 
-ESP8266CommandStatus ESP8266::getVersion(char* buffer, int length)
+ESP8266CommandStatus ESP8266::getVersion(char *buffer, int length)
 {
     clear();
     _serial->println(F("AT+GMR"));
@@ -66,7 +66,7 @@ ESP8266CommandStatus ESP8266::setMode(ESP8266WifiMode mode)
     return readStatus(200);
 }
 
-ESP8266CommandStatus ESP8266::getMode(ESP8266WifiMode* mode)
+ESP8266CommandStatus ESP8266::getMode(ESP8266WifiMode *mode)
 {
     int c;
 
@@ -91,7 +91,7 @@ ESP8266CommandStatus ESP8266::getMode(ESP8266WifiMode* mode)
     return readStatus(20);
 }
 
-ESP8266CommandStatus ESP8266::joinAP(char* ssid, char* password)
+ESP8266CommandStatus ESP8266::joinAP(char *ssid, char *password)
 {
     clear();
     _serial->print(F("AT+CWJAP=\""));
@@ -103,7 +103,7 @@ ESP8266CommandStatus ESP8266::joinAP(char* ssid, char* password)
     return readStatus(16000);
 }
 
-ESP8266CommandStatus ESP8266::getAP(char* ssid)
+ESP8266CommandStatus ESP8266::getAP(char *ssid)
 {
     clear();
     _serial->println(F("AT+CWJAP?"));
@@ -125,7 +125,7 @@ ESP8266CommandStatus ESP8266::quitAP()
     return readStatus(20);
 }
 
-ESP8266CommandStatus ESP8266::setAPConfiguration(char* ssid, char* password, uint8_t channel, ESP8266Encryption encryption)
+ESP8266CommandStatus ESP8266::setAPConfiguration(char *ssid, char *password, uint8_t channel, ESP8266Encryption encryption)
 {
     clear();
     _serial->print(F("AT+CWSAP=\""));
@@ -141,7 +141,7 @@ ESP8266CommandStatus ESP8266::setAPConfiguration(char* ssid, char* password, uin
     return readStatus(1000);
 }
 
-ESP8266CommandStatus ESP8266::getAPConfiguration(char* ssid, char* password, uint8_t& channel, ESP8266Encryption& encryption)
+ESP8266CommandStatus ESP8266::getAPConfiguration(char *ssid, char *password, uint8_t &channel, ESP8266Encryption &encryption)
 {
     clear();
     _serial->println(F("AT+CWSAP?"));
@@ -171,7 +171,7 @@ ESP8266CommandStatus ESP8266::getAPConfiguration(char* ssid, char* password, uin
     return readStatus(2000);
 }
 
-ESP8266CommandStatus ESP8266::getConnectedStations(ESP8266Station* stations, unsigned int& count, const unsigned int max)
+ESP8266CommandStatus ESP8266::getConnectedStations(ESP8266Station *stations, unsigned int &count, const unsigned int max)
 {
     int c;
 
@@ -180,8 +180,10 @@ ESP8266CommandStatus ESP8266::getConnectedStations(ESP8266Station* stations, uns
 
     count = 0;
 
-    while (count < max) {
-        if (count > 0) {
+    while (count < max)
+    {
+        if (count > 0)
+        {
             if (!find(F("\r\n"), 20))
                 return ESP8266_COMMAND_TIMEOUT;
         }
@@ -207,7 +209,8 @@ ESP8266CommandStatus ESP8266::setDHCP(ESP8266WifiMode mode, bool enable)
     clear();
     _serial->print(F("AT+CWDHCP="));
 
-    switch (mode) {
+    switch (mode)
+    {
     case ESP8266_WIFI_STATION:
         _serial->print(1);
         break;
@@ -235,7 +238,8 @@ ESP8266CommandStatus ESP8266::setMAC(ESP8266WifiMode mode, byte mac[6])
     clear();
     _serial->print(F("AT+CIP"));
 
-    switch (mode) {
+    switch (mode)
+    {
     case ESP8266_WIFI_STATION:
         _serial->print(F("STA"));
         break;
@@ -249,7 +253,8 @@ ESP8266CommandStatus ESP8266::setMAC(ESP8266WifiMode mode, byte mac[6])
 
     _serial->print(F("MAC=\""));
 
-    for (uint8_t i = 0; i < 6; i++) {
+    for (uint8_t i = 0; i < 6; i++)
+    {
         _serial->print(mac[i], HEX);
 
         if (i < 5)
@@ -265,7 +270,8 @@ ESP8266CommandStatus ESP8266::getMAC(ESP8266WifiMode mode, byte mac[6])
 {
     clear();
 
-    switch (mode) {
+    switch (mode)
+    {
     case ESP8266_WIFI_STATION:
         _serial->println(F("AT+CIPSTAMAC?"));
 
@@ -291,12 +297,13 @@ ESP8266CommandStatus ESP8266::getMAC(ESP8266WifiMode mode, byte mac[6])
     return readStatus(20);
 }
 
-ESP8266CommandStatus ESP8266::setIP(ESP8266WifiMode mode, IPAddress& ip)
+ESP8266CommandStatus ESP8266::setIP(ESP8266WifiMode mode, IPAddress &ip)
 {
     clear();
     _serial->print(F("AT+CIP"));
 
-    switch (mode) {
+    switch (mode)
+    {
     case ESP8266_WIFI_STATION:
         _serial->print(F("STA"));
         break;
@@ -315,17 +322,14 @@ ESP8266CommandStatus ESP8266::setIP(ESP8266WifiMode mode, IPAddress& ip)
     return readStatus(20);
 }
 
-ESP8266CommandStatus ESP8266::getIP(ESP8266WifiMode mode, IPAddress& ip)
+ESP8266CommandStatus ESP8266::getIP(ESP8266WifiMode mode, IPAddress &ip)
 {
     clear();
 
-    switch (mode) {
+    switch (mode)
+    {
     case ESP8266_WIFI_STATION:
-        _serial->println(F("AT+CIPSTA?"));
-
-        if (!find(F("+CIPSTA:\""), 20))
-            return ESP8266_COMMAND_TIMEOUT;
-
+        _serial->println(F("AT+CIFSR"));
         break;
 
     case ESP8266_WIFI_ACCESSPOINT:
@@ -348,7 +352,7 @@ ESP8266CommandStatus ESP8266::getIP(ESP8266WifiMode mode, IPAddress& ip)
 /****************************************/
 /******       TCP/IP commands      ******/
 /****************************************/
-ESP8266CommandStatus ESP8266::getConnectionStatus(ESP8266ConnectionStatus& status, ESP8266Connection* connection, unsigned int& count)
+ESP8266CommandStatus ESP8266::getConnectionStatus(ESP8266ConnectionStatus &status, ESP8266Connection *connection, unsigned int &count)
 {
     int c;
 
@@ -362,7 +366,8 @@ ESP8266CommandStatus ESP8266::getConnectionStatus(ESP8266ConnectionStatus& statu
 
     count = 0;
 
-    while (true) {
+    while (true)
+    {
         if (!find(F("\r\n"), 20))
             return ESP8266_COMMAND_TIMEOUT;
 
@@ -409,7 +414,7 @@ ESP8266CommandStatus ESP8266::connect(ESP8266Protocol protocol, IPAddress ip, un
     return connect(ESP8266_SINGLE_CLIENT, protocol, ip, port);
 }
 
-ESP8266CommandStatus ESP8266::connect(ESP8266Protocol protocol, const char* host, unsigned int port)
+ESP8266CommandStatus ESP8266::connect(ESP8266Protocol protocol, const char *host, unsigned int port)
 {
     return connect(ESP8266_SINGLE_CLIENT, protocol, host, port);
 }
@@ -421,7 +426,7 @@ ESP8266CommandStatus ESP8266::connect(unsigned int id, ESP8266Protocol protocol,
     return post_connect(port);
 }
 
-ESP8266CommandStatus ESP8266::connect(unsigned int id, ESP8266Protocol protocol, const char* host, unsigned int port)
+ESP8266CommandStatus ESP8266::connect(unsigned int id, ESP8266Protocol protocol, const char *host, unsigned int port)
 {
     pre_connect(id, protocol);
     _serial->print(host);
@@ -447,7 +452,7 @@ ESP8266CommandStatus ESP8266::setMultipleConnections(bool enable)
     return readStatus(20);
 }
 
-ESP8266CommandStatus ESP8266::getMultipleConnections(bool& enable)
+ESP8266CommandStatus ESP8266::getMultipleConnections(bool &enable)
 {
     int c;
 
@@ -493,7 +498,7 @@ ESP8266CommandStatus ESP8266::setServerTimeout(unsigned int timeout)
     return readStatus(20);
 }
 
-ESP8266CommandStatus ESP8266::getServerTimeout(unsigned int& timeout)
+ESP8266CommandStatus ESP8266::getServerTimeout(unsigned int &timeout)
 {
     clear();
     _serial->println(F("AT+CIPSTO?"));
@@ -517,7 +522,8 @@ int ESP8266::available()
 
     // incoming sequence is +IPD,id,length:data or +IPD,length:data
     // non-blocking search of '+'
-    do {
+    do
+    {
         c = _serial->read();
 
         if (c == -1)
@@ -537,17 +543,21 @@ int ESP8266::available()
     // check for timeouts and store _available and _id
     if (c == -1)
         _available = -1;
-    else if (c == ',') {
+    else if (c == ',')
+    {
         _id = tmp;
         _available = parseInt(20);
 
         // skip ':'
         if (timedRead(20) == -1)
             _available = -1;
-    } else if (c ==  ':') {
+    }
+    else if (c == ':')
+    {
         _id = ESP8266_SINGLE_CLIENT;
         _available = tmp;
-    } else
+    }
+    else
         _available = -2;
 
     return _available;
@@ -560,10 +570,13 @@ unsigned int ESP8266::getId()
 
 int ESP8266::read()
 {
-    if (available() > 0) {
+    if (available() > 0)
+    {
         _available--;
 
-        while (!_serial->available()) {}
+        while (!_serial->available())
+        {
+        }
 
         return _serial->read();
     }
@@ -571,18 +584,20 @@ int ESP8266::read()
     return -1;
 }
 
-int ESP8266::read(char* buffer, size_t size)
+int ESP8266::read(char *buffer, size_t size)
 {
-    return read((uint8_t*)buffer, size);
+    return read((uint8_t *)buffer, size);
 }
 
-int ESP8266::read(uint8_t* buffer, size_t size)
+int ESP8266::read(uint8_t *buffer, size_t size)
 {
-    if (available() > 0) {
+    if (available() > 0)
+    {
         int readable = min(size, _available);
         size_t count = 0;
 
-        while (count < readable) {
+        while (count < readable)
+        {
             int c = timedRead(_timeout);
 
             if (c == -1)
@@ -601,9 +616,12 @@ int ESP8266::read(uint8_t* buffer, size_t size)
 
 int ESP8266::peek()
 {
-    if (available() > 0) {
+    if (available() > 0)
+    {
 
-        while (!_serial->available()) {}
+        while (!_serial->available())
+        {
+        }
 
         return _serial->peek();
     }
@@ -629,14 +647,17 @@ size_t ESP8266::write(uint8_t b)
 /****************************************/
 void ESP8266::clear()
 {
-    while (_serial->read() != -1) {}
+    while (_serial->read() != -1)
+    {
+    }
 }
 
 bool ESP8266::initialize()
 {
     unsigned long startMillis = millis();
 
-    while (millis() - startMillis < 3000) {
+    while (millis() - startMillis < 3000)
+    {
         if (test() == ESP8266_COMMAND_OK && setEcho(false) == ESP8266_COMMAND_OK && setUnvarnishedMode(false) == ESP8266_COMMAND_OK)
             return true;
 
@@ -685,14 +706,17 @@ int ESP8266::timedRead(unsigned int timeout)
     unsigned long startMillis = millis();
     int c;
 
-    do {
+    do
+    {
         c = _serial->read();
 
         // return the byte if valid
-        if (c >= 0) {
+        if (c >= 0)
+        {
 #ifdef ESP8266_DEBUG
 
-            if (millis() - startMillis > 20) {
+            if (millis() - startMillis > 20)
+            {
                 Serial.print(F("==> Read: "));
                 Serial.print(millis() - startMillis);
                 Serial.println(F("ms"));
@@ -701,7 +725,7 @@ int ESP8266::timedRead(unsigned int timeout)
 #endif
             return c;
         }
-    } while(millis() - startMillis < timeout);
+    } while (millis() - startMillis < timeout);
 
     return -1;
 }
@@ -713,14 +737,16 @@ void ESP8266::pre_connect(unsigned int id, ESP8266Protocol protocol)
     clear();
     _serial->print(F("AT+CIPSTART="));
 
-    if (id != ESP8266_SINGLE_CLIENT) {
+    if (id != ESP8266_SINGLE_CLIENT)
+    {
         _serial->print(id);
         _serial->print(F(","));
     }
 
     _serial->print(F("\""));
 
-    switch (protocol) {
+    switch (protocol)
+    {
     case ESP8266_PROTOCOL_TCP:
         _serial->print(F("TCP"));
         break;
@@ -746,14 +772,17 @@ int ESP8266::timedPeek(unsigned int timeout)
     unsigned long startMillis = millis();
     int c;
 
-    do {
+    do
+    {
         c = _serial->peek();
 
         // return the byte if valid
-        if (c >= 0) {
+        if (c >= 0)
+        {
 #ifdef ESP8266_DEBUG
 
-            if (millis() - startMillis > 20) {
+            if (millis() - startMillis > 20)
+            {
                 Serial.print(F("==> Peek: "));
                 Serial.print(millis() - startMillis);
                 Serial.println(F("ms"));
@@ -762,7 +791,7 @@ int ESP8266::timedPeek(unsigned int timeout)
 #endif
             return c;
         }
-    } while(millis() - startMillis < timeout);
+    } while (millis() - startMillis < timeout);
 
     // timeout
     return -1;
@@ -780,7 +809,8 @@ byte ESP8266::parseHex(unsigned int timeout)
     int c;
     byte b = 0;
 
-    for (uint8_t i = 0; i < 2; i++) {
+    for (uint8_t i = 0; i < 2; i++)
+    {
         c = timedRead(timeout);
 
         if (c == -1)
@@ -804,7 +834,7 @@ byte ESP8266::parseHex(unsigned int timeout)
 
 ESP8266Protocol ESP8266::parseProtocol(unsigned int timeout)
 {
-    const char* protocols[] = {"TCP", "UDP"};
+    const char *protocols[] = {"TCP", "UDP"};
 
     return (ESP8266Protocol)findStrings(protocols, 2, true, timeout);
 }
@@ -819,9 +849,10 @@ IPAddress ESP8266::parseIPAddress(unsigned int timeout)
     return ip;
 }
 
-void ESP8266::parseMACAddress(byte* mac, unsigned int timeout)
+void ESP8266::parseMACAddress(byte *mac, unsigned int timeout)
 {
-    for (uint8_t i = 0; i < 6; i++) {
+    for (uint8_t i = 0; i < 6; i++)
+    {
         mac[i] = (uint8_t)parseHex(timeout);
 
         if (i < 5)
@@ -831,67 +862,75 @@ void ESP8266::parseMACAddress(byte* mac, unsigned int timeout)
 
 ESP8266CommandStatus ESP8266::readStatus(unsigned int timeout)
 {
-    const char* statuses[] = {"OK\r\n", "no change\r\n", "ERROR\r\n", "link is not\r\n", "too long\r\n", "FAIL\r\n", "ALREAY CONNECT\r\n"};
+    const char *statuses[] = {"OK\r\n", "no change\r\n", "ERROR\r\n", "link is not\r\n", "too long\r\n", "FAIL\r\n", "ALREAY CONNECT\r\n"};
 
     return (ESP8266CommandStatus)findStrings(statuses, 7, false, timeout);
 }
 
-bool ESP8266::find(const __FlashStringHelper* target)
+bool ESP8266::find(const __FlashStringHelper *target)
 {
     return find(target, 0);
 }
 
-bool ESP8266::find(const __FlashStringHelper* target, unsigned int timeout)
+bool ESP8266::find(const __FlashStringHelper *target, unsigned int timeout)
 {
     PGM_P p = reinterpret_cast<PGM_P>(target);
     size_t index = 0;
     int c;
 
     // read until timeout
-    while ((c = timedRead(timeout)) >= 0) {
+    while ((c = timedRead(timeout)) >= 0)
+    {
 
 #ifdef ESP8266_DEBUG
         Serial.write(c);
 #endif
 
         // match magic
-        if(c == pgm_read_byte(p + index)) {
+        if (c == pgm_read_byte(p + index))
+        {
             if (pgm_read_byte(p + ++index) == 0)
                 return true;
-        } else
+        }
+        else
             index = 0;
     }
 
     return false;
 }
 
-size_t ESP8266::readUntil(char* buffer, size_t length, const __FlashStringHelper* target, unsigned int timeout)
+size_t ESP8266::readUntil(char *buffer, size_t length, const __FlashStringHelper *target, unsigned int timeout)
 {
     PGM_P p;
     size_t index = 0;
     size_t bufferIndex = 0;
     int c;
 
-    if (target != NULL)  // target is specified
+    if (target != NULL) // target is specified
         p = reinterpret_cast<PGM_P>(target);
 
     // read until timeout
-    while ((c = timedRead(timeout)) >= 0) {
+    while ((c = timedRead(timeout)) >= 0)
+    {
         // skip first carriage return and new line characters
         if (bufferIndex == 0 && (c == 13 || c == 10))
             continue;
 
-        if (target != NULL) {  // target is specified
+        if (target != NULL)
+        { // target is specified
             // match magic
-            if(c == pgm_read_byte(p + index)) {
+            if (c == pgm_read_byte(p + index))
+            {
                 if (pgm_read_byte(p + ++index) == 0)
                     return bufferIndex;
-            } else
+            }
+            else
                 index = 0;
         }
 
         // store in buffer if char does not match any of the target
-        if (index == 0) {
+        if (index == 0)
+        {
             bufferIndex++;
             *buffer++ = (char)c;
 
@@ -904,14 +943,15 @@ size_t ESP8266::readUntil(char* buffer, size_t length, const __FlashStringHelper
     return bufferIndex;
 }
 
-int ESP8266::findStrings(const char** strings, unsigned int count, bool strict, unsigned int timeout)
+int ESP8266::findStrings(const char **strings, unsigned int count, bool strict, unsigned int timeout)
 {
     unsigned int indexes[10] = {};
     bool match;
     int c;
 
     // read until match or timeout
-    while ((c = timedRead(timeout)) >= 0) {
+    while ((c = timedRead(timeout)) >= 0)
+    {
         match = false;
 
 #ifdef ESP8266_DEBUG
@@ -919,14 +959,17 @@ int ESP8266::findStrings(const char** strings, unsigned int count, bool strict, 
 #endif
 
         // loop over possible strings
-        for (int i = 0; i < count; i++) {
+        for (int i = 0; i < count; i++)
+        {
             // match magic
-            if(c == strings[i][indexes[i]]) {
+            if (c == strings[i][indexes[i]])
+            {
                 match = true;
 
                 if (strings[i][++indexes[i]] == 0)
                     return i;
-            } else
+            }
+            else
                 indexes[i] = 0;
         }
 
